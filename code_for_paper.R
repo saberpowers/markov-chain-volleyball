@@ -130,6 +130,7 @@ contact <- plays |>
   ) |>
   dplyr::filter(!is.na(abbrev), !is.na(serving_team)) |>
   dplyr::group_by(match_id, point_id, team_touch_id, point) |>
+  # STEP 0: DEFINE THE STATE OF THE MARKOV CHAIN
   dplyr::mutate(
     state = paste0(serve_receive[1], "_", cumpaste(abbrev, .sep = ".")),
     num_contacts = length(abbrev)   # much faster than counting number of periods in state
@@ -143,6 +144,7 @@ bad_data <- contact |>
   dplyr::filter((num_contacts > 4) | (abbrev %in% c("SV", "A") & !is_volley_end)) |>
   dplyr::distinct(match_id, point_id)
 
+# STEP 1: COUNT THE NUMBER OF TRANSITIONS BETWEEN EACH PAIR OF STATES
 state_transition <- contact |>
   dplyr::anti_join(bad_data, by = c("match_id", "point_id")) |>
   dplyr::count(state, next_state = dplyr::lead(state, 1)) |>
@@ -155,6 +157,7 @@ state_transition <- contact |>
     )
   )
 
+# STEP 2: CONVERT TRANSITION COUNTS INTO TRANSITION PROBABILITIES
 state_transition_wide <- state_transition |>
   # Add a row so that S_SV appears once in the next_state column (for creating transition matrix)
   dplyr::bind_rows(tibble::tibble(state = "S_SV", next_state = "S_SV", n = 0)) |>
@@ -167,16 +170,19 @@ state_transition_wide <- state_transition |>
   tidyr::pivot_wider(names_from = next_state, values_from = prob, values_fill = 0) |>
   dplyr::arrange(state)
 
+# Step 2.5: Convert dataframe to matrix for multiplication
 state_transition_matrix <- state_transition_wide |>
   tibble::column_to_rownames("state") |>
   as.matrix()
 
 state_transition_matrix_limit <- state_transition_matrix
 
+# STEP 3: MULTIPLY THE TRANSITION MATRIX BY ITSELF A BUNCH OF TIMES
 for (i in 1:100) {
   state_transition_matrix_limit <- state_transition_matrix_limit %*% state_transition_matrix
 }
 
+# STEP 4: EXTRACT TERMINAL STATE PROBABILITIES FOR EACH STARTING STATE
 sideout_prob <- state_transition_matrix_limit[, c("S_P", "R_P")] |>
   tibble::as_tibble() |>
   tibble::add_column(state = rownames(state_transition_matrix), .before = 1) |>
