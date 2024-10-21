@@ -31,7 +31,7 @@ meta_data <- datavolley::dv_read(
 )$meta
 
 plays <- data.table::fread("R/data/datavolley.csv",
-  select = c("match_id", "set_number", "point_id", "team_touch_id",
+  select = c("match_id", "set_number", "point_id", "home_team_score", "visiting_team_score", "team_touch_id",
     "team", "serving_team", "point", "skill", "evaluation_code",
     "team_id", "home_team_id", "visiting_team_id", "player_id", "player_name", "start_zone",
     "end_zone", "start_coordinate_x", "start_coordinate_y", "end_coordinate_x", "end_coordinate_y",
@@ -141,7 +141,14 @@ contact <- plays |>
 # serves and attacks must end the volley (may want to relax this assumption for attacks).
 # For any points where this is violated, we want to throw out the whole point.
 bad_data <- contact |>
-  dplyr::filter((num_contacts > 4) | (abbrev %in% c("SV", "A") & !is_volley_end)) |>
+  dplyr::group_by(state) |>
+  dplyr::mutate(n = dplyr::n()) |>
+  dplyr::ungroup() |>
+  dplyr::filter(
+    (num_contacts > 4) |
+    (abbrev %in% c("SV", "A") & !is_volley_end) |
+    (n < 100)
+  ) |>
   dplyr::distinct(match_id, point_id)
 
 # STEP 1: COUNT THE NUMBER OF TRANSITIONS BETWEEN EACH PAIR OF STATES
@@ -156,6 +163,19 @@ state_transition <- contact |>
       TRUE ~ next_state
     )
   )
+
+# What is the range of sample sizes?
+state_transition |>
+  dplyr::group_by(state) |>
+  dplyr::summarize(n = sum(n), .groups = "drop") |>
+  dplyr::arrange(n) |>
+  head()
+state_transition |>
+  dplyr::group_by(state) |>
+  dplyr::summarize(n = sum(n), .groups = "drop") |>
+  dplyr::arrange(-n) |>
+  head()
+
 
 # STEP 2: CONVERT TRANSITION COUNTS INTO TRANSITION PROBABILITIES
 state_transition_wide <- state_transition |>
@@ -231,6 +251,10 @@ serve_data <- contact_sideout_prob |>
   dplyr::mutate(receiver_id_model = ifelse(count < 100, "0", receiver_id))
 
 #stop('modeling starts here')
+
+# What is our sample size?
+ serve_data |>
+  dplyr::summarize(sum(no_error))
 
 .time <- Sys.time()
 serve_model <- serve_data |>
