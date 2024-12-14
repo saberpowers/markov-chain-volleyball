@@ -23,6 +23,8 @@
 #data.table::fwrite(plays, file = "R/data_datavolley.csv")
 #
 
+randomize_blocker_digger_resp <- FALSE
+
 # Load data ----
 
 meta_data <- datavolley::dv_read(
@@ -151,6 +153,21 @@ bad_data <- contact |>
   ) |>
   dplyr::distinct(match_id, point_id)
 
+# Illustrative example for paragraph 2 of Section 3.1
+contact |>
+  dplyr::mutate(
+    skill_lead_2 = dplyr::lead(skill, 2),
+    skill_lead_2 = ifelse(skill_lead_2 == "Dig", skill_lead_2, NA),
+    evaluation_code_lead_2 = dplyr::lead(evaluation_code, 2),
+    evaluation_code_lead_2 = ifelse(skill_lead_2 == "Dig", evaluation_code_lead_2, NA),
+    opposing = ifelse(skill_lead_2 == "Dig", team_id != dplyr::lead(team_id, 2), NA)
+  ) |>
+  dplyr::anti_join(bad_data, by = c("match_id", "point_id")) |>
+  dplyr::filter(skill == "Attack", skill_lead_1 != "Attack") |>
+  dplyr::count(ec = evaluation_code, skill_lead_1, ec_lead_1 = evaluation_code_lead_1, opposing, skill_lead_2, ec_lead_2 = evaluation_code_lead_2) |>
+  dplyr::arrange(ec, -n) |>
+  as.data.frame()
+
 # STEP 1: COUNT THE NUMBER OF TRANSITIONS BETWEEN EACH PAIR OF STATES
 state_transition <- contact |>
   dplyr::anti_join(bad_data, by = c("match_id", "point_id")) |>
@@ -175,6 +192,30 @@ state_transition |>
   dplyr::summarize(n = sum(n), .groups = "drop") |>
   dplyr::arrange(-n) |>
   head()
+
+{
+  pdf("~/Downloads/state_sample_size.pdf", height = 5, width = 5)
+  par(mar = c(5.1, 4.1, 2.1, 0))
+  state_transition |>
+    dplyr::group_by(state) |>
+    dplyr::summarize(n = sum(n), .groups = "drop") |>
+    dplyr::filter(!state %in% c("S_SV", "R_P", "S_P")) |>
+    with(
+      hist(
+        log(n, base = 10),
+        breaks = 30,
+        col = rice_blue_transparent,
+        border = rice_blue_transparent,
+        axes = FALSE,
+        main = "",
+        xlab = "Sample Size",
+        ylab = "Number of States"
+      )
+    )
+    axis(1, at = 2:5, label = parse(text = paste0("10^", 2:5)))
+    axis(2)
+  dev.off()
+}
 
 
 # STEP 2: CONVERT TRANSITION COUNTS INTO TRANSITION PROBABILITIES
@@ -265,7 +306,7 @@ serve_model <- serve_data |>
       control = lme4::lmerControl(calc.derivs = FALSE)
     )
   )
-print(Sys.time() - .time)
+print(Sys.time() - .time)   # 5 minutes
 
 serve_data_adj <- serve_data |>
   dplyr::mutate(
@@ -619,6 +660,16 @@ attack_data <- attack |>
   dplyr::left_join(win_prob_from_dig, by = c("outcome_eval" = "eval")) |>
   dplyr::filter(substring(volley_start, 1, 1) %in% c("D", "R", "F")) |>
   dplyr::mutate(
+    blocker_resp = ifelse(
+      test = rep(randomize_blocker_digger_resp, length = dplyr::n()),
+      yes = sample(c("FL", "FM", "FR"), size = dplyr::n(), replace = TRUE),
+      no = blocker_resp
+    ),
+    digger_resp = ifelse(
+      test = rep(randomize_blocker_digger_resp, length = dplyr::n()),
+      yes = sample(c("FL", "FM", "FR", "BL", "BM", "BR"), size = dplyr::n(), replace = TRUE),
+      no = blocker_resp
+    ),
     blocker_id = dplyr::case_when(
       !is.na(blocker_id) ~ blocker_id,
       blocker_resp == "FL" ~ defense_front_left_player_id,
@@ -700,7 +751,7 @@ sd_attacker <- attr(lme4::VarCorr(attack_model$is_error)$player_id_model, 'stdde
 sd_setter <- attr(lme4::VarCorr(attack_model$is_error)$setter_id_model, 'stddev')
 pct_is_error_attacker <- sd_attacker / (sd_attacker + sd_setter)
 pct_is_error_setter <- sd_setter / (sd_attacker + sd_setter)
-print(Sys.time() - .time)
+print(Sys.time() - .time) # < 1 minute
 
 .time <- Sys.time()
 attack_model$is_block <- lme4::lmer(
@@ -756,7 +807,7 @@ sd_blocker <- attr(lme4::VarCorr(attack_model$no_block)$player_id_model, 'stddev
 sd_digger <- attr(lme4::VarCorr(attack_model$no_block)$digger_id_model, 'stddev')
 pct_no_block_blocker <- sd_blocker / (sd_blocker + sd_digger)
 pct_no_block_digger <- sd_digger / (sd_blocker + sd_digger)
-print(Sys.time() - .time) # 1.2 hours
+print(Sys.time() - .time) # 0.5-2.5 hours
 
 .time <- Sys.time()
 attack_model$block_through <- lme4::lmer(
@@ -787,6 +838,60 @@ sd_setter <- attr(lme4::VarCorr(attack_model$block_return)$setter_id_model, 'std
 pct_block_return_attacker <- sd_attacker / (sd_attacker + sd_setter)
 pct_block_return_setter <- sd_setter / (sd_attacker + sd_setter)
 print(Sys.time() - .time) # 12 minutes
+
+flatten_model_summary <- function(model) {
+  var_corr_flat <- lme4::VarCorr(model) |>
+    tibble::as_tibble() |>
+    dplyr::select(grp, sdcor) |>
+    tidyr::pivot_wider(names_from = "grp", values_from = "sdcor")
+  return(var_corr_flat)
+}
+
+flatten_model_summary(serve_model) |>
+  dplyr::select(
+    conf_id_offense, team_id_offense, server_id_model,
+    conf_id_defense, team_id_defense, receiver_id_model,
+    Residual
+  ) |>
+  xtable::xtable(digits = 3) |>
+  print(
+    file = "~/Downloads/model_summary_serve.tex",
+    hline.after = NULL,
+    NA.string = "---",
+    include.rownames = FALSE,
+    include.colnames = FALSE,
+    only.contents = TRUE
+  )
+
+
+lapply(attack_model, flatten_model_summary) |>
+  do.call(what = dplyr::bind_rows, args = _) |>
+  dplyr::select(
+    conf_id_offense, team_id_offense, player_id_model, setter_id_model,
+    conf_id_defense, team_id_defense, blocker_id_model, dplyr::any_of("digger_id_model"),
+    Residual
+  ) |>
+  tibble::add_column(
+    Model = c(
+      "(1) Attack error indicator",
+      "(2) Clean attack indicator",
+      "(3) Block error indicator",
+      "(4) Block-through indicator",
+      "(5) Block-return outcome",
+      "(6) Block-through outcome",
+      "(7) Clean attack outcome"
+    ),
+    .before = 1
+  ) |>
+  xtable::xtable(digits = 3) |>
+  print(
+    file = "~/Downloads/model_summary_attack.tex",
+    hline.after = NULL,
+    NA.string = "---",
+    include.rownames = FALSE,
+    include.colnames = FALSE,
+    only.contents = TRUE
+  )
 
 attack_data_with_pg_adj <- attack_data_with_pg |>
   dplyr::mutate(
@@ -1310,7 +1415,7 @@ pg_overall_per_set |>
   dplyr::arrange(-pg_adj) |>
   print(n = 30)
 
-avca <- read.csv("R/avca.csv") |>
+avca <- read.csv("R/data/avca.csv") |>
   dplyr::mutate(player_id = as.character(player_id))
 
 pg_avca <- pg_overall_per_set |>
@@ -1720,22 +1825,50 @@ serve_data_adj |>
 ##  dplyr::mutate(pred_points_added = intercept + server_effect)
 ##
 
+# Comparison vs. randomized blocker and digger assignments ----
+
+suffix <- ifelse(randomize_blocker_digger_resp, "random", "actual")
+pg_overall_per_set |>
+  dplyr::filter(sets_played >= 50) |>
+  dplyr::select(player_id, sets_played, dplyr::ends_with("_adj")) |>
+  saveRDS(file = glue::glue("~/Downloads/pg_overall_{suffix}.rds"))
+
+pg_overall_per_set_actual <- readRDS("~/Downloads/pg_overall_actual.rds")
+pg_overall_per_set_random <- readRDS("~/Downloads/pg_overall_random.rds")
+pg_overall_per_set_fixed |>
+  dplyr::left_join(pg_overall_per_set_random,
+    by = c("player_id", "sets_played"),
+    suffix = c("_actual", "_random")
+  ) |>
+  tidyr::pivot_longer(cols = dplyr::contains("adj")) |>
+  dplyr::mutate(
+    skill = substring(name, 1, nchar(name) - 7),
+    name = substring(name, nchar(name) - 5)
+  ) |>
+  tidyr::pivot_wider() |>
+  dplyr::group_by(skill) |>
+  dplyr::summarize(
+    corr = weights::wtd.cor(actual, random, w = sets_played)[1],
+    stderr = weights::wtd.cor(actual, random, w = sets_played)[2]
+  )
+
+
 # Bootstrap standard errors ----
 
 folders <- list.files("R/bootstrap")
 
-conference <- NULL
+conference_boot <- NULL
 for (folder in folders) {
   conference_files <- list.files(glue::glue("R/bootstrap/{folder}/conference"))
   for (file in conference_files) {
-    conference <- dplyr::bind_rows(
-      conference,
+    conference_boot <- dplyr::bind_rows(
+      conference_boot,
       data.table::fread(glue::glue("R/bootstrap/{folder}/conference/{file}")) |>
         tibble::add_column(boot = paste(folder, file, sep = "/"), .before = 1)
     )
   }
 }
-conference_se <- conference |>
+conference_se <- conference_boot |>
   dplyr::group_by(conference_name) |>
   dplyr::summarize(se = sd(pg_adj), .groups = "drop") |>
   as.data.frame()
