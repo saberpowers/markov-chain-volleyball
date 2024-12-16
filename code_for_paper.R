@@ -193,6 +193,7 @@ state_transition |>
   dplyr::arrange(-n) |>
   head()
 
+rice_blue_transparent <- rgb(0.000, 0.125, 0.357, alpha = 0.5, maxColorValue = 1)
 {
   pdf("~/Downloads/state_sample_size.pdf", height = 5, width = 5)
   par(mar = c(5.1, 4.1, 2.1, 0))
@@ -667,7 +668,7 @@ attack_data <- attack |>
     ),
     digger_resp = ifelse(
       test = rep(randomize_blocker_digger_resp, length = dplyr::n()),
-      yes = sample(c("FL", "FM", "FR", "BL", "BM", "BR"), size = dplyr::n(), replace = TRUE),
+      yes = sample(c("BL", "BM", "BR"), size = dplyr::n(), replace = TRUE),
       no = blocker_resp
     ),
     blocker_id = dplyr::case_when(
@@ -1835,7 +1836,7 @@ pg_overall_per_set |>
 
 pg_overall_per_set_actual <- readRDS("~/Downloads/pg_overall_actual.rds")
 pg_overall_per_set_random <- readRDS("~/Downloads/pg_overall_random.rds")
-pg_overall_per_set_fixed |>
+pg_overall_per_set_actual |>
   dplyr::left_join(pg_overall_per_set_random,
     by = c("player_id", "sets_played"),
     suffix = c("_actual", "_random")
