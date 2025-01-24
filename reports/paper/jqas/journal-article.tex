@@ -55,7 +55,7 @@
 %\dedication{...}
 	
 \abstract{
-    The progression of a single point in volleyball starts with a serve and then alternates between teams, each team allowed up to three contacts with the ball. Using charted data from the 2022 NCAA Division I women's volleyball season (4,147 matches, 600,000+ points, more than 5 million recorded contacts), we model the progression of a point as a Markov chain with the state space defined by the sequence of contacts in the current volley. We estimate the probability of each team winning the point, which changes on each contact. We attribute changes in point probability to the player(s) responsible for each contact, facilitating measurement of performance on the point scale for different skills. Traditional volleyball statistics do not allow apples-to-apples comparisons across skills, and they do not measure the impact of the performances on team success. For adversarial contact \textcolor{blue}{groups (serve/reception and \textcolor{blue}{set/}attack/block/dig)}, we estimate a hierarchical linear model for the outcome, with random effects for the players involved; and we adjust performance for strength of schedule not only on the conference/team level but on the individual player level. We can use the results to answer practical questions for volleyball coaches.
+    The progression of a single point in volleyball starts with a serve and then alternates between teams, each team allowed up to three contacts with the ball. Using charted data from the 2022 NCAA Division I women's volleyball season (4,147 matches, 600,000+ points, more than 5 million recorded contacts), we model the progression of a point as a Markov chain with the state space defined by the sequence of contacts in the current volley. We estimate the probability of each team winning the point, which changes on each contact. We attribute changes in point probability to the player(s) responsible for each contact, facilitating measurement of performance on the point scale for different skills. Traditional volleyball statistics do not allow apples-to-apples comparisons across skills, and they do not measure the impact of the performances on team success. For adversarial contact groups (serve/reception and set/attack/block/dig), we estimate a hierarchical linear model for the outcome, with random effects for the players involved; and we adjust performance for strength of schedule not only on the conference/team level but on the individual player level. We can use the results to answer practical questions for volleyball coaches.
 }
 
 \keywords{Markov chain, random-effect linear model, player evaluation}
@@ -69,9 +69,9 @@ Women's volleyball has recently grown in popularity in the United States. In 202
 
 A volleyball match has the following structure: Two teams of six are positioned at opposite sides of a net that bisects the court horizontally. The first team to win 3 {\it sets} wins the game. The first four sets are played to 25 points, win by 2, meaning that a set is played until a team has at least 25 points and a lead of at least 2. The fifth set, if needed, is played to 15 points, win by 2. Teams score points by winning rallies. A rally is won if: the ball touches the ground in the playing area on the opponent's side of the court; the ball lands outside of the playing area last touched by the opponent; or the opponent commits a violation (such as contacting the net). Each rally is initiated with a serve (service) that must go over the net to the other team's side. When a team receives the ball from the serve, it begins the attack  after  the  reception phase and can contact the ball a total of three times before the ball must cross the other side or result in a violation. After the ball crosses the net, the transition phase begins and the other team now must return the ball within three contacts (block contacts do not count toward this limit).
 
-Among the six starting players on the court, most teams deploy players in four different positions. The setter (S) is primarily responsible for setting the ball to the attackers. The two outside hitters (OH) are primarily responsible for attacking and passing. The two middle blockers (MB) are primarily responsible for blocking and attacking. The opposite hitter (OPP) is primarily responsible for attacking and blocking. In addition to these roles, there is a special position, the libero (L), who wears a different-colored jersey. The libero can freely come on and off the court for any player, but she can only play in the back row, so she is primarily responsible for passing. Every time a team wins service back from their opponent (a team always serves after winning point), the players rotate one position clockwise around the court. Although players are required to start the point in this rotation position, \textcolor{blue}{as soon as the ball has been served, they quickly run to their desired positions, subject to the constraint that back row players tend not to play front row positions (because a back row player is not permitted to attack or block above the net from a front row position).}
+Among the six starting players on the court, most teams deploy players in four different positions. The setter (S) is primarily responsible for setting the ball to the attackers. The two outside hitters (OH) are primarily responsible for attacking and passing. The two middle blockers (MB) are primarily responsible for blocking and attacking. The opposite hitter (OPP) is primarily responsible for attacking and blocking. In addition to these roles, there is a special position, the libero (L), who wears a different-colored jersey. The libero can freely come on and off the court for any player, but she can only play in the back row, so she is primarily responsible for passing. Every time a team wins service back from their opponent (a team always serves after winning point), the players rotate one position clockwise around the court. Although players are required to start the point in this rotation position, as soon as the ball has been served, they quickly run to their desired positions, subject to the constraint that back row players tend not to play front row positions (because a back row player is not permitted to attack or block above the net from a front row position).
 
-\textcolor{blue}{Generally, volleyball teams run one of two offensive schemes (which can be changed mid-match): 5-1 (5 hitters, 1 setter) or 6-2 (6 hitters, 2 setters). In a 5-1 scheme, there is one setter who stays on the court throughout all six rotations, with five hitters occupying the other rotation positions. In a 6-2 scheme, there are two rotation positions (opposite each other) which are used for a setter while in the back row and used for an opposite hitter while in the front row. Each time one of these rotation positions moves to the front row (and the other moves to the back row), there is a double substitution. A new opposite hitter replaces the setter who rotated into the front row, and a new setter replaces the opposite hitter who rotated into the back row. The 6-2 scheme requires more substitutions but means that there are always three attacking options in the front row.}
+Generally, volleyball teams run one of two offensive schemes (which can be changed mid-match): 5-1 (5 hitters, 1 setter) or 6-2 (6 hitters, 2 setters). In a 5-1 scheme, there is one setter who stays on the court throughout all six rotations, with five hitters occupying the other rotation positions. In a 6-2 scheme, there are two rotation positions (opposite each other) which are used for a setter while in the back row and used for an opposite hitter while in the front row. Each time one of these rotation positions moves to the front row (and the other moves to the back row), there is a double substitution. A new opposite hitter replaces the setter who rotated into the front row, and a new setter replaces the opposite hitter who rotated into the back row. The 6-2 scheme requires more substitutions but means that there are always three attacking options in the front row.
 
 The standard box score metrics for the core skills in volleyball are ace percentage and error percentage for serving; error percentage and passer rating (ordinal rating of pass quality) for receiving; digs per set and digs per opportunity for digging; assists per set for setting; hitting efficiency for attacking, defined as (Kills -- Errors) / Attempts; and blocks per set for blocking. All of these measurements are in different units, and their is no obvious way to compare performance across skills.
 
@@ -83,11 +83,11 @@ Our approach is to implement two techniques to measure individual contribution t
 
 The Markov chain has long been used to model the progression of sports which have well-defined states and probabilistic transitions between them. Baseball (\cite{bukiet_etal_1997}) may be the sport where this type of analysis is most predominant, with the game state defined by which bases are occupied and how many outs there are. The model has also been used in tennis (\cite{newton_etal_2009}) and table tennis (\cite{pfeiffer_etal_2010}), which are net sports like volleyball.
 
-Two early uses of the Markov chain model for skill measurement in volleyball are \textcite{florence_etal_2008} and \textcite{miskin_etal_2010}, both of which used contact-by-contact data (contacts by the home team only) from one season of home matches for a college women's volleyball team. \textcolor{blue}{\textcite{drikos_etal_2019} followed similar methodology to estimate skill importance in male volleyball in different age categories (U19, U21 and men).} \textcite{bagley_ware_2017} used a full season (over 4.5 million contacts) of contact-by-contact data from women's college volleyball to rate player performance in the core skills.
+Two early uses of the Markov chain model for skill measurement in volleyball are \textcite{florence_etal_2008} and \textcite{miskin_etal_2010}, both of which used contact-by-contact data (contacts by the home team only) from one season of home matches for a college women's volleyball team. \textcite{drikos_etal_2019} followed similar methodology to estimate skill importance in male volleyball in different age categories (U19, U21 and men). \textcite{bagley_ware_2017} used a full season (over 4.5 million contacts) of contact-by-contact data from women's college volleyball to rate player performance in the core skills.
 
 \textcite{drikos_2018} used a Markov chain model with international men's (and youth) volleyball data to estimate the probability of winning a point based a rating of pass quality, with the goal of validating a six-level ordinal scale for pass quality. \textcite{hileno_etal_2020} used a Markov chain model with international women's volleyball data for the sequencing of categorized possessions, with the goal of identifying possession categories for focused training.
 
-\textcolor{blue}{An alternative approach to using Markov chain modelling for player evaluation is to perform regression modelling for the outcomes of rallies or possessions based on the players involved. \textcite{hass_craig_2018} explored regularized adjusted plus-minus for college women's volleyball using a season of data from one Division I team.} \textcite{fellingham_2022} used Bayesian hierarchical logistic regression to model the outcomes of possessions based on which players contact the ball during the possession. \textcolor{blue}{These two methods measure} individual contributions to team success across varied skills on the scale of points, so they are the most similar to the present work. \textcolor{blue}{\textcite{egidi_ntzoufras_2020} and \textcite{gabrio_2021} also applied Bayesian hierarchical regression to volleyball data, with the goal of predicting the results of Italian men's and women's (respectively) professional matches.  \textcite{ntzoufras_etal_2021} developed Bayesian models for predicting match set differences using Greek professional data.}
+An alternative approach to using Markov chain modeling for player evaluation is to perform regression modeling for the outcomes of rallies or possessions based on the players involved. \textcite{hass_craig_2018} explored regularized adjusted plus-minus for college women's volleyball using a season of data from one Division I team. \textcite{fellingham_2022} used Bayesian hierarchical logistic regression to model the outcomes of possessions based on which players contact the ball during the possession. These two methods measure individual contributions to team success across varied skills on the scale of points, so they are the most similar to the present work. \textcite{egidi_ntzoufras_2020} and \textcite{gabrio_2021} also applied Bayesian hierarchical regression to volleyball data, with the goal of predicting the results of Italian men's and women's (respectively) professional matches. \textcite{ntzoufras_etal_2021} developed Bayesian models for predicting match set differences using Greek professional data.
 
 What distinguishes the present work is that no prior work measures the change in point win probability with each contact and aggregates those changes to evaluate each skill as it impacts team win probability. Additionally, no prior work adjusts player performance measurements based on the quality of competition faced by the player. These two contributions are important for informing decision-making by college women's volleyball teams, both in player recruitment and in-game strategy.
 
@@ -100,28 +100,33 @@ For every contact that occurred in the 2022 NCAA Division I women's college voll
 \begin{table}
     \centering
     \input{tables/sample_data.tex}
-    \caption{An illustrative sample from the dataset. These are the contacts from the first point of the 2022 NCAA national championship, with the most important columns shown. For each contact, we observe the player, the skill, an evaluation of the quality of the contact, and the coordinates of the starting location. \textcolor{blue}{Figure \ref{tab:sample-data} illustrates the (X, Y) coordinates. The attack codes here are X6 (a tempo ball set to the opposite hitter); V5 (a high ball set to the outside hitter); and X5 (a tempo ball set to the outside hitter). A glossary of common attack codes is available in the appendix.}}
+    \caption{
+      An illustrative sample from the dataset. These are the contacts from the first point of the 2022 NCAA national championship, with the most important columns shown. For each contact, we observe the player, the skill, an evaluation of the quality of the contact, and the coordinates of the starting location. Figure \ref{tab:sample-data} illustrates the (X, Y) coordinates. The attack codes here are X6 (a tempo ball set to the opposite hitter); V5 (a high ball set to the outside hitter); and X5 (a tempo ball set to the outside hitter). A glossary of common attack codes is available in the appendix.
+    }
     \label{tab:sample-data}
 \end{table}
 
 \begin{figure}
     \centering
 %    \includegraphics[height=10cm]{reports/paper/jqas/figures/sample_data.png}
-    \caption{\textcolor{blue}{An illustration of the (X, Y) coordinates from the sample data in Table \ref{tab:sample-data}. The bottom and left axes correspond to Louisville contacts (in black), and the top and right axes correspond to Texas contacts (in blue).}}
+    \caption{
+      An illustration of the (X, Y) coordinates from the sample data in Table \ref{tab:sample-data}. The bottom and left axes correspond to Louisville contacts (in black), and the top and right axes correspond to Texas contacts (in blue).
+    }
     \label{fig:sample-data}
 \end{figure}
 
-Aside from player, team, skill and lineup information, the most important columns for the present work are the evaluation code, the attack code and the end \textcolor{blue}{location, which is classified as one of the 9 zones shown in Figure \ref{fig:volleyball-court-diagram}. The evaluation is a rating of the outcome of the contact, using the rating scale described in Table \ref{tab:evaluation-codes}.} For attacks, the attack code describes the type of attack (set location, set tempo, attacker position), and the end zone indicates the zone of the court where the attack ended, according to Figure \ref{fig:volleyball-court-diagram}. \textcolor{blue}{We provide a glossary of common attack codes in the appendix.}
+Aside from player, team, skill and lineup information, the most important columns for the present work are the evaluation code, the attack code and the end location, which is classified as one of the 9 zones shown in Figure \ref{fig:volleyball-court-diagram}. The evaluation is a rating of the outcome of the contact, using the rating scale described in Table \ref{tab:evaluation-codes}. For attacks, the attack code describes the type of attack (set location, set tempo, attacker position), and the end zone indicates the zone of the court where the attack ended, according to Figure \ref{fig:volleyball-court-diagram}. We provide a glossary of common attack codes in the appendix.
 
 \begin{table}
     \centering
-    \color{blue}
     \input{tables/evaluation_codes.tex}
-    \caption{\textcolor{blue}{Ordinal outcome rating scale by skill type. The scales are similar but not identical between different skills. Only serve, reception and block use the ! evaluation code, and the meaning of the / evaluation code for the serve is different from other skills (not used for set or dig).}}
+    \caption{
+      Ordinal outcome rating scale by skill type. The scales are similar but not identical between different skills. Only serve, reception and block use the ! evaluation code, and the meaning of the / evaluation code for the serve is different from other skills (not used for set or dig).
+    }
     \label{tab:evaluation-codes}
 \end{table}
 
-The lineup data indicate which player is in each \textcolor{blue}{rotation position, with one of the rotation positions designated as that of the setter. This designation follows that rotation position as the game progresses and the team rotates, regardless of any substitutions made. This allows us to track the team's rotation for any rally.} Substitutions are recorded in the data, but when the libero comes on and off the court, it is not recorded. In fact, the identity of the libero is not in the lineup data, but we infer it \textcolor{blue}{for each team-set} based on which player is making plays without being in the lineup. \textcolor{blue}{NCAA rules allow for only one libero per team per set}.
+The lineup data indicate which player is in each rotation position, with one of the rotation positions designated as that of the setter. This designation follows that rotation position as the game progresses and the team rotates, regardless of any substitutions made. This allows us to track the team's rotation for any rally. Substitutions are recorded in the data, but when the libero comes on and off the court, it is not recorded. In fact, the identity of the libero is not in the lineup data, but we infer it for each team-set based on which player is making plays without being in the lineup. NCAA rules allow for only one libero per team per set.
 
 \begin{figure}
     \centering
@@ -158,27 +163,26 @@ The dataset spans 4,147 matches from the 2022 NCAA Division I women's volleyball
 \subsection{Point Win Probability (PWP) Model}
 \label{sec:point-win-prob}
 
-\textcolor{blue}{We use the word {\it possession} (some use ``complex''; see \textcite{hileno_etal_2020} and \textcite{laporta_etal_2015}) to describe the sequence of consecutive contacts that a team performs while the ball is on their side of the net.} We model the progression of a volleyball point as a Markov chain, where the state is given by $s = (T, P) \in \mathcal{S}$. $T$ encodes whether the serving (S) or receiving (R) is currently in possession of the ball, and $P$ encodes the subsequence of \textcolor{blue}{contacts} that have occurred in the current possession, including the evaluation code of all \textcolor{blue}{contacts} other than attacks and blocks. For attacks, $P$ also encodes the attack code, i.e. the type of attack. Two terminal states, $(\mbox{S, W})$ and $(\mbox{R, W})$, indicate that the serving team or the receiving team, respectively, has won the point. We use $\mathcal{S}_{\mbox{\scriptsize S}} \subset \mathcal{S}$ to denote the subset of states for which the serving team is in possession, i.e. $T = \mbox{S}$, and $\mathcal{S}_{\mbox{\scriptsize R}} = \mathcal{S} - \mathcal{S}_{\mbox{\scriptsize S}}$ is the subset of states for which the receiving team is in possession, i.e. $T = \mbox{R}$. Every \textcolor{blue}{contact} corresponds to a transition from a starting state to an ending state.
+We use the word {\it possession} (some use ``complex''; see \textcite{hileno_etal_2020} and \textcite{laporta_etal_2015}) to describe the sequence of consecutive contacts that a team performs while the ball is on their side of the net. We model the progression of a volleyball point as a Markov chain, where the state is given by $s = (T, P) \in \mathcal{S}$. $T$ encodes whether the serving (S) or receiving (R) is currently in possession of the ball, and $P$ encodes the subsequence of contacts that have occurred in the current possession, including the evaluation code of all contacts other than attacks and blocks. For attacks, $P$ also encodes the attack code, i.e. the type of attack. Two terminal states, $(\mbox{S, W})$ and $(\mbox{R, W})$, indicate that the serving team or the receiving team, respectively, has won the point. We use $\mathcal{S}_{\mbox{\scriptsize S}} \subset \mathcal{S}$ to denote the subset of states for which the serving team is in possession, i.e. $T = \mbox{S}$, and $\mathcal{S}_{\mbox{\scriptsize R}} = \mathcal{S} - \mathcal{S}_{\mbox{\scriptsize S}}$ is the subset of states for which the receiving team is in possession, i.e. $T = \mbox{R}$. Every contact corresponds to a transition from a starting state to an ending state.
 
-We exclude the evaluation code for attacks and blocks because these evaluation codes have a very strong one-to-many correspondence with the evaluation code of the following contact. In other words, the evaluation code of the following contact is a richer representation of the outcome of the attack/block. {\color{blue} For example, there are three possible outcomes from an attack with a -- evaluation code:
+We exclude the evaluation code for attacks and blocks because these evaluation codes have a very strong one-to-many correspondence with the evaluation code of the following contact. In other words, the evaluation code of the following contact is a richer representation of the outcome of the attack/block. For example, there are three possible outcomes from an attack with a -- evaluation code:
 \begin{enumerate}
     \item an opposing dig with a \# evaluation code;
     \item an opposing dig with a + evaluation code; or
     \item a teammate dig with a -- evaluation code.
 \end{enumerate}
-However, given one of these outcomes, it is necessarily the case that the attack evaluation code is -- and that the block evaluation code is + (if a block occurred). Because of this, we rely on the evaluation code of the resulting dig} and ignore the evaluation code of the attack/block. One may think of the Markov state ending in an attack as the state of the point when the ball has been set to the attacker, before the outcome of the attack. The next state transition reflects the outcome of the attack.
+However, given one of these outcomes, it is necessarily the case that the attack evaluation code is -- and that the block evaluation code is + (if a block occurred). Because of this, we rely on the evaluation code of the resulting dig and ignore the evaluation code of the attack/block. One may think of the Markov state ending in an attack as the state of the point when the ball has been set to the attacker, before the outcome of the attack. The next state transition reflects the outcome of the attack.
 
 Using the example data from the first point of the 2022 national championship in Section \ref{sec:data}, the progression of observed states is as follows:
 \begin{align*}
-    &\mbox{(S, \textcolor{blue}{Sv})}  \rightarrow\\
-    &\mbox{(R, R\#)} \rightarrow \mbox{(R, R\#\textcolor{blue}{St}\#)} \rightarrow \mbox{(R, R\#\textcolor{blue}{St}\#AX6)} \rightarrow\\
-    &\mbox{(S, D+)}  \rightarrow \mbox{(S, D+\textcolor{blue}{St}\#)}  \rightarrow \mbox{(S, D+\textcolor{blue}{St}\#AV5)}  \rightarrow\\
+    &\mbox{(S, Sv)}  \rightarrow\\
+    &\mbox{(R, R\#)} \rightarrow \mbox{(R, R\#St\#)} \rightarrow \mbox{(R, R\#St\#AX6)} \rightarrow\\
+    &\mbox{(S, D+)}  \rightarrow \mbox{(S, D+St\#)}  \rightarrow \mbox{(S, D+St\#AV5)}  \rightarrow\\
     &\mbox{(R, B+)}  \rightarrow\\
-    &\mbox{(S, D!)}  \rightarrow \mbox{(S, D!\textcolor{blue}{St}\#)}  \rightarrow \mbox{(S, D!\textcolor{blue}{St}\#AX5)}  \rightarrow\\
+    &\mbox{(S, D!)}  \rightarrow \mbox{(S, D!St\#)}  \rightarrow \mbox{(S, D!St\#AX5)}  \rightarrow\\
     &\mbox{(S, W)}
 \end{align*}
 
-{\color{blue}
 We use the function $p: \mathcal{S} \times \mathcal{S} \rightarrow [0, 1]$ to denote the transition probabilities between states. From $p$ and the memoryless property of the Markov chain, we can inductively calculate the $k$-step transition probability as $p^{(1)}(s, s') = p(s, s')$ and $p^{(k)}(s, s') = \sum_{\tilde s \in \mathcal{S}}p^{(k-1)}(s, \tilde s) \cdot p^{(1)}(\tilde s, s')$ for any natural number $k > 1$. To calculate point win probability, we are interested in the {\it sideout} probability, i.e. the probability that the receiving team eventually wins the point, reaching the terminal state (R, W). We use the function $v: \mathcal{S} \rightarrow [0, 1]$ to denote the sideout probability of each state, and it is also useful to have the point win probability from the perspective of the team in possession. For this, we use the function $w(s) = \mathbb{I}\{s \in \mathcal{S}_{\mbox{\scriptsize R}}\} \cdot v(s) + \mathbb{I}\{s \in \mathcal{S}_{\mbox{\scriptsize S}}\} \cdot (1 - v(s))$.
 
 \subsubsection{Data Cleaning}
@@ -210,29 +214,25 @@ We use the estimated 100-step transition probability as our estimate of $v(\cdot
   \hat v(s) &= \hat p^{(100)}(s, \mbox{(R, W)}),\mbox{ and}\\
   \hat w(s) &= \mathbb{I}\{s \in \mathcal{S}_{\mbox{\scriptsize R}}\} \cdot \hat v(s) + \mathbb{I}\{s \in \mathcal{S}_{\mbox{\scriptsize S}}\} \cdot (1 - \hat v(s)).
 \end{align*}
-}
 
 \subsection{Strength of Schedule (SoS) Model}
 \label{sec:strength-of-schedule}
 
 With a large number of teams and a wide spread of talent within our dataset, it is no surprise that many of the top individual performances will come from players in smaller conferences that face less stringent competition. From the perspective of player scouting and recruitment, it is helpful to adjust individual performances according to their strength of schedule, i.e. the quality of competition they faced.
 
-\textcolor{blue}{
 In this section we introduce {\it adversarial contact groups} which are sequences of consecutive contacts occurring in opposition to one other. There are two types of adversarial groups: serve/reception and set/attack/block/dig. In a serve/reception group, there is always a serve followed by a reception. In a set/attack/block/dig group, there is always a set followed by an attack. There may or may not be a block, and there may or may not be a dig. The outcome of the final contact of an adversarial group reflects on all contacts in the group.
-}
 
-Generally, our approach is to model the outcome\textcolor{blue}{s} of adversarial \textcolor{blue}{contact groups} using \textcolor{blue}{linear mixed-effects models (LMMs)}, with hierarchical random effects for conference, team and player. Because of this hierarchy of random effects, the model regresses team effects toward conference means and regresses player effects toward team means. Each \textcolor{blue}{adversarial contact group} yields both a categorical (ending state) and a numeric (win probability from ending state) with each observation. We use different likelihood models for the two groupings.
+Generally, our approach is to model the outcomes of adversarial contact groups using linear mixed-effects models (LMMs), with hierarchical random effects for conference, team and player. Because of this hierarchy of random effects, the model regresses team effects toward conference means and regresses player effects toward team means. Each adversarial contact group yields both a categorical (ending state) and a numeric (win probability from ending state) with each observation. We use different likelihood models for the two groupings.
 
-\subsubsection{Serve/\textcolor{blue}{Reception} Outcomes}
+\subsubsection{Serve/Reception Outcomes}
 \label{sec:sos-serve}
 
-The serve/\textcolor{blue}{reception} outcome is the simpler of the two adversarial groupings. The seven possible outcomes are a service error or a \textcolor{blue}{reception} with one of the following \textcolor{blue}{ordinal} evaluation codes: \textcolor{blue}{\#, +, !, --, /, or = (see Table \ref{tab:evaluation-codes})}. That final evaluation code, =, correspond\textcolor{blue}{s} to an ace. Even when no receiver touches the serve, our dataset always includes an assignment of responsibility for a service ace to a player on the receiving team. Service errors do not include a receiver responsibility assignment.
+The serve/reception outcome is the simpler of the two adversarial groupings. The seven possible outcomes are a service error or a reception with one of the following ordinal evaluation codes: \#, +, !, --, /, or = (see Table \ref{tab:evaluation-codes}). That final evaluation code, =, corresponds to an ace. Even when no receiver touches the serve, our dataset always includes an assignment of responsibility for a service ace to a player on the receiving team. Service errors do not include a receiver responsibility assignment.
 
-We exclude service errors from the SoS model because we do not have receiver responsibility assignments and because we judge the impact of receiver on service errors to be small (using domain knowledge). Therefore our SoS model for serve/\textcolor{blue}{reception} outcomes is based on the conditional outcome of the serve, given that there is no service error. Rather than modeling the categorical \textcolor{blue}{reception} outcome, we model the numeric change in win probability corresponding to the \textcolor{blue}{reception} outcome, using a normal likelihood. Although the normal distribution assumption is unreasonable for a random variable that can only take six different values, the model is fit for purpose because we are only interested in point estimates for the additive effects of conference, player and team on the outcome.
+We exclude service errors from the SoS model because we do not have receiver responsibility assignments and because we judge the impact of receiver on service errors to be small (using domain knowledge). Therefore our SoS model for serve/reception outcomes is based on the conditional outcome of the serve, given that there is no service error. Rather than modeling the categorical reception outcome, we model the numeric change in win probability corresponding to the reception outcome, using a normal likelihood. Although the normal distribution assumption is unreasonable for a random variable that can only take six different values, the model is fit for purpose because we are only interested in point estimates for the additive effects of conference, player and team on the outcome.
 
-Our dataset contains \textcolor{blue}{$n_{\mbox{\scriptsize Sv}} =$ 592,192} non-error serves indexed by $i \in \{1, ..., \textcolor{blue}{n_{\mbox{\scriptsize Sv}}}\}$. \textcolor{blue}{We} use $\mathcal{P}$, $\mathcal{T}$, $\mathcal{C}$ to denote the sets of all players, teams and conferences, respectively, present in our data. For each serve $i$, we observe the server $p_i \in \mathcal{P}$; the serving team $t_i \in \mathcal{T}$; the conference $c_i \in \mathcal{C}$ of the serving team; the receiver $r_i \in \mathcal{P}$; the receiving team $\tilde t_i \in \mathcal{T}$; and the conference $\tilde c_i \in \mathcal{C}$ of the receiving team. Additionally we observe the states $s_i, s'_i \in \mathcal{S}$ before and after the serve outcome, respectively. The pre-outcome state is always $s_i =$ (S, \textcolor{blue}{Sv}). An example of a post-outcome state is $s'_i = \mbox{(R, R\#)}$. We use $y_i = -(\hat v(s'_i) - \hat v(s_i))$ to denote the change in point win probability (from the serving team's perspective) due to the serve outcome. Note that we negate the change in $\hat v(\cdot)$ to frame the win probability gain from the serving team's perspective because $\hat v(\cdot)$ is the sideout probability (i.e. win probability from the receiving team's perspective). We use $Y_i$ to denote the random variable from which the observed data $y_i$ is a random draw. We model the probability distribution of $Y_i$ as:
+Our dataset contains $n_{\mbox{\scriptsize Sv}} =$ 592,192 non-error serves indexed by $i \in \{1, ..., n_{\mbox{\scriptsize Sv}}\}$. We use $\mathcal{P}$, $\mathcal{T}$, $\mathcal{C}$ to denote the sets of all players, teams and conferences, respectively, present in our data. For each serve $i$, we observe the server $p_i \in \mathcal{P}$; the serving team $t_i \in \mathcal{T}$; the conference $c_i \in \mathcal{C}$ of the serving team; the receiver $r_i \in \mathcal{P}$; the receiving team $\tilde t_i \in \mathcal{T}$; and the conference $\tilde c_i \in \mathcal{C}$ of the receiving team. Additionally we observe the states $s_i, s'_i \in \mathcal{S}$ before and after the serve outcome, respectively. The pre-outcome state is always $s_i =$ (S, Sv). An example of a post-outcome state is $s'_i = \mbox{(R, R\#)}$. We use $y_i = -(\hat v(s'_i) - \hat v(s_i))$ to denote the change in point win probability (from the serving team's perspective) due to the serve outcome. Note that we negate the change in $\hat v(\cdot)$ to frame the win probability gain from the serving team's perspective because $\hat v(\cdot)$ is the sideout probability (i.e. win probability from the receiving team's perspective). We use $Y_i$ to denote the random variable from which the observed data $y_i$ is a random draw. We model the probability distribution of $Y_i$ as:
 \begin{align}
-  \color{blue}
   \label{eqn:serve-model}
   Y_i \sim \mbox{Normal}(\alpha + \gamma_{c_i} + \tau_{t_i} + \pi_{p_i} + \tilde\gamma_{\tilde c_i} + \tilde\tau_{\tilde t_i} + \rho_{r_i}, \sigma^2_\epsilon).
 \end{align}
@@ -256,24 +256,22 @@ We group the outcomes of attacks into five categories: (1) attack error, (2) blo
 
 The attack error and block error have only one outcome: The team committing the error loses the point. The other three categories of outcomes can result in the point ending (if the ball touches the floor) or in a dig, if a player is able to reach the ball before it touches the floor. We use an outcome tree as a taxonomy to represent the hierarchy of attack outcomes, as illustrated in Figure \ref{fig:attack-model-tree}. At the top level of the hierarchy is the split between attack error and not. If there is no attack error, the next split is on whether there is a block touch. If there is a block touch, the next split is between block error and not. Conditioned on a block touch, the final binary split is on whether the ball is returned by the block or gets through the block. For the non-terminal leaves (clean attack, block-return and block-through), we have an ordinal outcome (kill or a dig with some evaluation code).
 
-Our dataset contains \textcolor{blue}{$n_{\mbox{\scriptsize A}}$ = 1,023,930} attacks indexed by $i \in \{1, ..., \textcolor{blue}{n_{\mbox{\scriptsize A}}}\}$. As before, we use $\mathcal{P}, \mathcal{T}, \mathcal{C}$ to denote the sets of all players, teams and conferences, respectively, in our data. For each attack $i$, we observe the attacker $a_i \in \mathcal{P}$; the setter $s_i \in \mathcal{P}$; the attacking team $t_i \in \mathcal{T}$; and the conference $c_i \in \mathcal{C}$ of the attacking team. On the other side of the net, we observe the defending team $\tilde t_i \in \mathcal{T}$ and the conference $\tilde c_i \in \mathcal C$ of the defending team. Depending on the outcome, we sometimes observe the blocker $b_i \in \mathcal{P}$, and we sometimes observe the digger $d_i \in \mathcal{P}$. For some outcomes, we do not need to know the blocker or digger. For other outcomes, we infer the block/dig responsibility based on the attack (see Section \ref{sec:block-dig-responsibility}). In addition to the actors involved, we observe the states $s_i, s'_i \in \mathcal{S}$ before and after the attack outcome, respectively. An example pre-outcome state is (R, R\#\textcolor{blue}{St}\#A), meaning that the attack follows a perfect set which followed a perfect pass in reception. An example post-outcome state is (S, D+), meaning that the outcome of the attack was a good dig for the defensive team.
+Our dataset contains $n_{\mbox{\scriptsize A}}$ = 1,023,930 attacks indexed by $i \in \{1, ..., n_{\mbox{\scriptsize A}}\}$. As before, we use $\mathcal{P}, \mathcal{T}, \mathcal{C}$ to denote the sets of all players, teams and conferences, respectively, in our data. For each attack $i$, we observe the attacker $a_i \in \mathcal{P}$; the setter $s_i \in \mathcal{P}$; the attacking team $t_i \in \mathcal{T}$; and the conference $c_i \in \mathcal{C}$ of the attacking team. On the other side of the net, we observe the defending team $\tilde t_i \in \mathcal{T}$ and the conference $\tilde c_i \in \mathcal C$ of the defending team. Depending on the outcome, we sometimes observe the blocker $b_i \in \mathcal{P}$, and we sometimes observe the digger $d_i \in \mathcal{P}$. For some outcomes, we do not need to know the blocker or digger. For other outcomes, we infer the block/dig responsibility based on the attack (see Section \ref{sec:block-dig-responsibility}). In addition to the actors involved, we observe the states $s_i, s'_i \in \mathcal{S}$ before and after the attack outcome, respectively. An example pre-outcome state is (R, R\#St\#A), meaning that the attack follows a perfect set which followed a perfect pass in reception. An example post-outcome state is (S, D+), meaning that the outcome of the attack was a good dig for the defensive team.
 
 Our approach is to model the change in point win probability that occurs at each split in the outcome tree. With each split, as we learn more about the outcome of the attack, the conditional win probability changes based on this information. To formalize this, we introduce four random variables to represent the outcome at each split:
-\textcolor{blue}{
 \begin{align*}
     X_i^{(1)} &= \mathbb{I}\{\mbox{attack $i$ results in an attack error}\},\\
     X_i^{(2)} &= \mathbb{I}\{\mbox{attack $i$ results in a clean attack (no block touch)}\},\\
     X_i^{(3)} &= \mathbb{I}\{\mbox{attack $i$ results in a block error}\},\mbox{ and}\\
     X_i^{(4)} &= \mathbb{I}\{\mbox{attack $i$ results in a block-through}\}.\\
 \end{align*}
-}
 We use $x_i^{(k)}$ to denote the observed value of the random variable $X_i^{(k)}$. Using these variables, we define seven component models for the outcome of an attack. In each of the models below, the player, team and conference effects are modeled as random effects, each with mean zero and a fixed, unknown variance.\\
 
 \begin{enumerate}
     \item
         {\bf Attack error indicator.} We model the change in conditional point win probability due to whether or not the attack results in an attack error. Our outcome variable $Y_i^{(1)}$ is the difference in win probability before and after $X_i^{(1)}$ is observed:
         \begin{equation*}
-            Y_i^{(1)} \equiv \mathbb{E}\left[\textcolor{blue}{\hat w}(S'_i) \mid S_i, X_i^{(1)}\right] - \mathbb{E}\left[\textcolor{blue}{\hat w}(S'_i) \mid S_i\right].
+            Y_i^{(1)} \equiv \mathbb{E}\left[\hat w(S'_i) \mid S_i, X_i^{(1)}\right] - \mathbb{E}\left[\hat w(S'_i) \mid S_i\right].
         \end{equation*}
         We fit a normal regression model for $Y_i^{(1)}$ with random effects for offensive team, offensive conference, attacker, and setter. The implicit assumption is that the defense does not have a substantial effect on whether the attacker makes an error. We do not include this component model in our strength of schedule estimation, but we do use this model for dividing credit between the attacker and the setter for changes in win probability (Section \ref{sec:attribution-attack}).
         \begin{equation}
@@ -284,14 +282,12 @@ We use $x_i^{(k)}$ to denote the observed value of the random variable $X_i^{(k)
             \right).
         \end{equation}
 
-        \textcolor{blue}{
           Note that equation (\ref{eqn:attack-model-1}) re-uses notation from equation (\ref{eqn:serve-model}), specifically $\alpha$, $\gamma_{c_i}$, $\tau_{t_i}$ and $\sigma^2_\epsilon$. While the meaning of each parameter is similar between the two models, for the avoidance of doubt, these parameters do not share values between models (\ref{eqn:serve-model}) and (\ref{eqn:attack-model-1}). We estimate the models separately from each other and separately from the rest of the models presented in this section, which will continue to re-use this notation.
-        }
     \item
         {\bf Clean attack indicator.} We model the change in conditional point win probability due to whether or not the attack results in a clean attack. Our outcome variable $Y_i^{(2)}$ is the difference in win probability before and after $X_i^{(2)}$ is observed:
         \begin{align*}
-            Y_i^{(2)} \equiv &~\mathbb{E}\left[\textcolor{blue}{\hat w}(S'_i) \mid S_i, X_i^{(1)} = 0, X_i^{(2)}\right]\\
-            - &~\mathbb{E}\left[\textcolor{blue}{\hat w}(S'_i) \mid S_i, X_i^{(1)} = 0\right].
+            Y_i^{(2)} \equiv &~\mathbb{E}\left[\hat w(S'_i) \mid S_i, X_i^{(1)} = 0, X_i^{(2)}\right]\\
+            - &~\mathbb{E}\left[\hat w(S'_i) \mid S_i, X_i^{(1)} = 0\right].
         \end{align*}
         We estimate a normal regression model for $Y_i^{(2)}$ with random effects for offensive team, offensive conference, attacker, setter, defensive team, defensive conference, and blocker. We fit this model using only attacks for which $x_i^{(1)} = 0$, i.e. no attack errors. If $x_i^{(2)} = 0$, there is a block touch, and we observe the blocker identity. If $x_i^{(2)} = 1$, there is no block touch, and we infer blocker identity (Section \ref{sec:block-dig-responsibility}).
         \begin{equation}
@@ -304,8 +300,8 @@ We use $x_i^{(k)}$ to denote the observed value of the random variable $X_i^{(k)
     \item
         {\bf Block error indicator.} We model the change in conditional point win probability due to whether or not the attack results in a block error. Our outcome variable $Y_i^{(3)}$ is the difference in win probability before and after $X_i^{(3)}$ is observed:
         \begin{align*}
-            Y_i^{(3)} \equiv &~\mathbb{E}\left[\textcolor{blue}{\hat w}(S'_i) \mid S_i, X_i^{(1)} = 0, X_i^{(2)} = 0, X_i^{(3)}\right]\\
-            - &~\mathbb{E}\left[\textcolor{blue}{\hat w}(S'_i) \mid S_i, X_i^{(1)} = 0, X_i^{(2)} = 0\right].
+            Y_i^{(3)} \equiv &~\mathbb{E}\left[\hat w(S'_i) \mid S_i, X_i^{(1)} = 0, X_i^{(2)} = 0, X_i^{(3)}\right]\\
+            - &~\mathbb{E}\left[\hat w(S'_i) \mid S_i, X_i^{(1)} = 0, X_i^{(2)} = 0\right].
         \end{align*}
         We estimate a normal regression model for $Y_i^{(3)}$ with random effects for offensive team, offensive conference, attacker, setter, defensive team, defensive conference, and blocker. We fit this model using only attacks for which $x_i^{(1)} = x_i^{(2)} = 0$, i.e. no attack errors, no clean attacks. In this case we always observe the blocker identity. In this case we always observe blocker identity.
         \begin{equation}
@@ -318,8 +314,8 @@ We use $x_i^{(k)}$ to denote the observed value of the random variable $X_i^{(k)
     \item
         {\bf Block-through indicator.} We model the change in conditional point win probability due to whether or not the attack results in a block-through. Our outcome variable $Y_i^{(4)}$ is the difference in win probability before and after $X_i^{(4)}$ is observed:
         \begin{align*}
-            Y_i^{(4)} \equiv &~\mathbb{E}\left[\textcolor{blue}{\hat w}(S'_i) \mid S_i, X_i^{(1)} = 0, X_i^{(2)} = 0, X_i^{(3)} = 0, X_i^{(4)}\right]\\
-            - &~\mathbb{E}\left[\textcolor{blue}{\hat w}(S'_i) \mid S_i, X_i^{(1)} = 0, X_i^{(2)} = 0, X_i^{(3)} = 0\right].
+            Y_i^{(4)} \equiv &~\mathbb{E}\left[\hat w(S'_i) \mid S_i, X_i^{(1)} = 0, X_i^{(2)} = 0, X_i^{(3)} = 0, X_i^{(4)}\right]\\
+            - &~\mathbb{E}\left[\hat w(S'_i) \mid S_i, X_i^{(1)} = 0, X_i^{(2)} = 0, X_i^{(3)} = 0\right].
         \end{align*}
         We estimate a normal regression model for $Y_i^{(4)}$ with random effects for offensive team, offensive conference, attacker, setter, defensive team, defensive conference, and blocker. We fit this model using only attacks for which $x_i^{(1)} = x_i^{(2)} = x_i^{(3)} = 0$, i.e. no attack errors, no clean attacks, no block errors. In this case we always observe blocker identity.
         \begin{equation}
@@ -332,7 +328,7 @@ We use $x_i^{(k)}$ to denote the observed value of the random variable $X_i^{(k)
     \item
         {\bf Block-return outcome.} We model the change in point win probability due to the outcome of a block-return. Our outcome variable $Y_i^{(5)}$ is the difference between the win probability of the outcome and the expected win probability, given that a block-return occurs.
         \begin{equation*}
-            Y_i^{(5)} \equiv \textcolor{blue}{\hat w}(S'_i) - \mathbb{E}\left[\textcolor{blue}{\hat w}(S'_i) \mid S_i, X_i^{(1)} = 0, X_i^{(2)} = 0, X_i^{(3)} = 0, X_i^{(4)} = 1\right].
+            Y_i^{(5)} \equiv \hat w(S'_i) - \mathbb{E}\left[\hat w(S'_i) \mid S_i, X_i^{(1)} = 0, X_i^{(2)} = 0, X_i^{(3)} = 0, X_i^{(4)} = 1\right].
         \end{equation*}
         We estimate a normal regression model for $Y_i^{(5)}$ with random effects for offensive team, offensive conference, attacker, setter, defensive team, defensive conference, and blocker. We fit this model using only attacks for which $x_i^{(1)} = x_i^{(2)} = x_i^{(3)} = x_i^{(4)} = 0$, i.e. only block-returns. In this case we always observe blocker identity.
         \begin{equation}
@@ -345,7 +341,7 @@ We use $x_i^{(k)}$ to denote the observed value of the random variable $X_i^{(k)
     \item
         {\bf Block-through outcome.} We model the change in point win probability due to the outcome of a block-through. Our outcome variable $Y_i^{(6)}$ is the difference between the win probability of the outcome and the expected win probability, given that a block-through occurs.
         \begin{equation*}
-            Y_i^{(6)} \equiv \textcolor{blue}{\hat w}(S'_i) - \mathbb{E}\left[\textcolor{blue}{\hat w}(S'_i) \mid S_i, X_i^{(1)} = 0, X_i^{(2)} = 0, X_i^{(3)} = 0, X_i^{(4)} = 0\right].
+            Y_i^{(6)} \equiv \hat w(S'_i) - \mathbb{E}\left[\hat w(S'_i) \mid S_i, X_i^{(1)} = 0, X_i^{(2)} = 0, X_i^{(3)} = 0, X_i^{(4)} = 0\right].
         \end{equation*}
         We estimate a normal regression model for $Y_i^{(6)}$ with random effects for offensive team, offensive conference, attacker, setter, defensive team, defensive conference, blocker, and digger. We fit this model using only attacks for which $x_i^{(4)} = 1$, i.e. only block-throughs. In this case we always observe blocker identity. We may or may not observe digger identity, depending on whether there is a dig touch after the block touch. If there is no dig touch, we infer digger identity.
         \begin{equation}
@@ -358,7 +354,7 @@ We use $x_i^{(k)}$ to denote the observed value of the random variable $X_i^{(k)
     \item
         {\bf Clean attack outcome.} We model the change in point win probability due to the outcome of a clean attack. Our outcome variable $Y_i^{(7)}$ is the difference between the win probability of the outcome and the expected win probability, given that a clean attack occurs.
         \begin{equation*}
-            Y_i^{(7)} \equiv \textcolor{blue}{\hat w}(S'_i) - \mathbb{E}\left[\textcolor{blue}{\hat w}(S'_i) \mid S_i, X_i^{(1)} = 0, X_i^{(2)} = 1, X_i^{(3)} = 0, X_i^{(4)} = 0\right].
+            Y_i^{(7)} \equiv \hat w(S'_i) - \mathbb{E}\left[\hat w(S'_i) \mid S_i, X_i^{(1)} = 0, X_i^{(2)} = 1, X_i^{(3)} = 0, X_i^{(4)} = 0\right].
         \end{equation*}
         We estimate a normal regression model for $Y_i^{(7)}$ with random effects for offensive team, offensive conference, attacker, setter, defensive team, defensive conference, blocker, and digger. We fit this model using only attacks for which $x_i^{(2)} = 1$, i.e. only clean attacks. In this case there is no block touch, and we must always infer blocker identity. We may or may not observe digger identity, depending on whether there is a dig touch after the block touch. If there is no dig touch, we infer digger identity.
         \begin{equation}
@@ -419,7 +415,7 @@ For cases in which the blocker identity is unknown, we use a deterministic metho
 
 Similarly, if a dig touch occurs following an attack, we observe the identity of the digger. Otherwise, we must infer it. In both models 6 and 7, the digger identity may not be observed depending on the outcome. For the unknown digger identities we use a deterministic method for assigning responsibility based on the attack code and the defensive zone (Figure \ref{fig:volleyball-court-diagram}) in which the attack lands. For each combination of attack code and defensive zone, we identify the defensive position (front or back; left, middle or right) which is most frequently responsible for the dig touch in the cases when there is a dig touch. For cases of this attack code and defensive zone when there is no dig touch, we assign the digger identity to the player in the most frequently responsible position.
 
-Generally, when defending an attack, a team will line up so that one player each is responsible for front-left, front-middle, front-right, back-left, back-middle and back-right. Our data do not tell us how the players are lined up, so we infer this. From the data, we know the rotation spot of the setter. We assume each team sets their service rotation relative to the setter in the following order: S, OH, MB, OPP, OH, MB. Domain knowledge tells us that this is true for the vast majority of teams. Based on the rotation spot of the setter, we know which players start the point in the front row and which players are in the back row (these do not change during the point). We assume that players line up defensively according to Figure \ref{fig:defensive-alignment}. Again, domain knowledge tells us that most (not all) teams used this alignment. \textcolor{blue}{The appendix provides an analysis of the robustness of results to the manner in which blocker and digger are inferred.}
+Generally, when defending an attack, a team will line up so that one player each is responsible for front-left, front-middle, front-right, back-left, back-middle and back-right. Our data do not tell us how the players are lined up, so we infer this. From the data, we know the rotation spot of the setter. We assume each team sets their service rotation relative to the setter in the following order: S, OH, MB, OPP, OH, MB. Domain knowledge tells us that this is true for the vast majority of teams. Based on the rotation spot of the setter, we know which players start the point in the front row and which players are in the back row (these do not change during the point). We assume that players line up defensively according to Figure \ref{fig:defensive-alignment}. Again, domain knowledge tells us that most (not all) teams used this alignment. The appendix provides an analysis of the robustness of results to the manner in which blocker and digger are inferred.
 
 \begin{figure}
     \centering
@@ -448,13 +444,13 @@ Note that in Figure \ref{fig:defensive-alignment} we have assumed that the liber
 \subsection{Individual Attribution}
 \label{sec:attribution}
 
-\subsubsection{Serve/\textcolor{blue}{Reception} Attribution}
+\subsubsection{Serve/Reception Attribution}
 
-Credit attribution for the serve/\textcolor{blue}{reception} outcome is straightforward because there is one player on each side of the adversarial matchup. For each player, we credit her with the difference between the change in point win probability and her strength of schedule. On serve $i$, we define the Points Gained (PG) by the serving player and receiving player, respectively, as
+Credit attribution for the serve/reception outcome is straightforward because there is one player on each side of the adversarial matchup. For each player, we credit her with the difference between the change in point win probability and her strength of schedule. On serve $i$, we define the Points Gained (PG) by the serving player and receiving player, respectively, as
 \begin{align}
     \label{eqn:pg-serve}
     \begin{split}
-        \mbox{PG}_i^{\mbox{\scriptsize \textcolor{blue}{Sv}}} &= y_i - \left(\hat\alpha + \hat{\tilde\gamma}_{c_i} + \hat{\tilde\tau}_{t_i} + \hat\pi_{p_i}\right),\\
+        \mbox{PG}_i^{\mbox{\scriptsize Sv}} &= y_i - \left(\hat\alpha + \hat{\tilde\gamma}_{c_i} + \hat{\tilde\tau}_{t_i} + \hat\pi_{p_i}\right),\\
         \mbox{PG}_i^{\mbox{\scriptsize R}} &= -\left(y_i - \left(\hat\alpha + \hat\gamma_{c_i} + \hat\tau_{t_i} + \hat\pi_{p_i}\right)\right).
     \end{split}
 \end{align}
@@ -464,14 +460,14 @@ Importantly, the unit of Points Gained is points. This allows us to make apples-
 \subsubsection{Set/Attack/Block/Dig Attribution}
 \label{sec:attribution-attack}
 
-Credit attribution for the \textcolor{blue}{set/}attack/block/dig outcome is more sophisticated because there are two players on each side of the adversarial matchup and because we have seven component models with different random effect specifications. We first perform the credit attribution within each of the component models separately, and then we sum the credit across components. To divide credit between teammates, we turn to the variance components estimated in the random-effects linear regression models (\ref{eqn:attack-model-1}) through (\ref{eqn:attack-model-7}).
+Credit attribution for the set/attack/block/dig outcome is more sophisticated because there are two players on each side of the adversarial matchup and because we have seven component models with different random effect specifications. We first perform the credit attribution within each of the component models separately, and then we sum the credit across components. To divide credit between teammates, we turn to the variance components estimated in the random-effects linear regression models (\ref{eqn:attack-model-1}) through (\ref{eqn:attack-model-7}).
 
 Taking model (\ref{eqn:attack-model-1}) for example, let $\sigma^2_\theta$ be the variance of the random effects $\theta_a$ for $a \in \mathcal{P}$, and let $\sigma^2_\psi$ be the variance of the random effects $\psi_s$ for $s \in \mathcal P$. The attacker identity explains $\sigma^2_\theta / (\sigma^2_\theta + \sigma^2_\psi)$ of the variance in the contribution of attacker and setter identities to the expected outcome. In other words, the fraction of variance in $\theta_{a_i} + \psi_{s_i}$ explained by the attacker identity is $\sigma^2_\theta / (\sigma^2_\theta + \sigma^2_\psi)$, and the fraction of variance explained by the setter identity is $\sigma^2_\psi / (\sigma^2_\theta + \sigma^2_\psi)$. We use the estimate of this ratio divide credit for $y_i^{(1)}$ between the attacker and the setter. For attack $i$, we define the Points Gained on component (1) by the attacker and setter, respectively, as:
 \begin{align}
     \label{eqn:pg-attack-1}
     \begin{split}
         \mbox{PG}_i^{\mbox{\scriptsize A(1)}} &= \frac{\hat\sigma^2_\theta}{(\hat\sigma^2_\theta + \hat\sigma^2_\psi)} \cdot y_i^{(1)},\\
-        \mbox{PG}_i^{\mbox{\scriptsize \textcolor{blue}{St}(1)}} &= \frac{\hat\sigma^2_\psi}{(\hat\sigma^2_\theta + \hat\sigma^2_\psi)} \cdot y_i^{(1)}.
+        \mbox{PG}_i^{\mbox{\scriptsize St(1)}} &= \frac{\hat\sigma^2_\psi}{(\hat\sigma^2_\theta + \hat\sigma^2_\psi)} \cdot y_i^{(1)}.
     \end{split}
 \end{align}
 
@@ -480,7 +476,7 @@ Model (\ref{eqn:attack-model-1}) does not include a strength of schedule adjustm
     \label{eqn:pg-attack-2}
     \begin{split}
         \mbox{PG}_i^{\mbox{\scriptsize A(2)}} &= \frac{\hat\sigma^2_\theta}{(\hat\sigma^2_\theta + \hat\sigma^2_\psi)} \cdot \left(y_i^{(2)} - (\hat\alpha + \hat{\tilde\gamma}_{\tilde c_i} + \hat{\tilde\tau}_{\tilde t_i} + \hat\beta_{b_i})\right),\\
-        \mbox{PG}_i^{\mbox{\scriptsize \textcolor{blue}{St}(2)}} &= \frac{\hat\sigma^2_\psi}{(\hat\sigma^2_\theta + \hat\sigma^2_\psi)} \cdot \left(y_i^{(2)} - (\hat\alpha + \hat{\tilde\gamma}_{\tilde c_i} + \hat{\tilde\tau}_{\tilde t_i} + \hat\beta_{b_i})\right),\\
+        \mbox{PG}_i^{\mbox{\scriptsize St(2)}} &= \frac{\hat\sigma^2_\psi}{(\hat\sigma^2_\theta + \hat\sigma^2_\psi)} \cdot \left(y_i^{(2)} - (\hat\alpha + \hat{\tilde\gamma}_{\tilde c_i} + \hat{\tilde\tau}_{\tilde t_i} + \hat\beta_{b_i})\right),\\
         \mbox{PG}_i^{\mbox{\scriptsize B(2)}} &= -\left(y_i^{(2)} - (\hat\alpha + \hat\gamma_{c_i} + \hat\tau_{t_i} + \hat\theta_{a_i} + \hat\psi_{s_i})\right).
     \end{split}
 \end{align}
@@ -489,7 +485,7 @@ Because the blocker does not have a teammate represented in this component model
     \label{eqn:pg-attack-7}
     \begin{split}
         \mbox{PG}_i^{\mbox{\scriptsize A(7)}} &= \frac{\hat\sigma^2_\theta}{(\hat\sigma^2_\theta + \hat\sigma^2_\psi)} \cdot \left(y_i^{(7)} - (\hat\alpha + \hat{\tilde\gamma}_{\tilde c_i} + \hat{\tilde\tau}_{\tilde t_i} + \hat\beta_{b_i} + \hat\delta_{d_i})\right),\\
-        \mbox{PG}_i^{\mbox{\scriptsize \textcolor{blue}{St}(7)}} &= \frac{\hat\sigma^2_\psi}{(\hat\sigma^2_\theta + \hat\sigma^2_\psi)} \cdot \left(y_i^{(7)} - (\hat\alpha + \hat{\tilde\gamma}_{\tilde c_i} + \hat{\tilde\tau}_{\tilde t_i} + \hat\beta_{b_i} + \hat\delta_{d_i})\right),\\
+        \mbox{PG}_i^{\mbox{\scriptsize St(7)}} &= \frac{\hat\sigma^2_\psi}{(\hat\sigma^2_\theta + \hat\sigma^2_\psi)} \cdot \left(y_i^{(7)} - (\hat\alpha + \hat{\tilde\gamma}_{\tilde c_i} + \hat{\tilde\tau}_{\tilde t_i} + \hat\beta_{b_i} + \hat\delta_{d_i})\right),\\
         \mbox{PG}_i^{\mbox{\scriptsize B(7)}} &= -\frac{\hat\sigma^2_\beta}{(\hat\sigma^2_\beta + \hat\sigma^2_\delta)} \cdot \left(y_i^{(7)} - (\hat\alpha + \hat\gamma_{c_i} + \hat\tau_{t_i} + \hat\theta_{a_i} + \hat\psi_{s_i})\right),\\
         \mbox{PG}_i^{\mbox{\scriptsize D(7)}} &= -\frac{\hat\sigma^2_\delta}{(\hat\sigma^2_\beta + \hat\sigma^2_\delta)} \cdot \left(y_i^{(7)} - (\hat\alpha + \hat\gamma_{c_i} + \hat\tau_{t_i} + \hat\theta_{a_i} + \hat\psi_{s_i})\right).
     \end{split}
@@ -499,7 +495,7 @@ We sum Points Gained across all components to obtain the Points Gained by each p
 \begin{equation}
     \label{eqn:pg-attack}
     \mbox{PG}_i^{\mbox{\scriptsize A}} = \sum_{k = 1}^7\mbox{PG}_i^{\mbox{\scriptsize A(k)}}, \hspace{5mm}
-    \mbox{PG}_i^{\mbox{\scriptsize \textcolor{blue}{St}}} = \sum_{k = 1}^7\mbox{PG}_i^{\mbox{\scriptsize \textcolor{blue}{St}(k)}}, \hspace{5mm}
+    \mbox{PG}_i^{\mbox{\scriptsize St}} = \sum_{k = 1}^7\mbox{PG}_i^{\mbox{\scriptsize St(k)}}, \hspace{5mm}
     \mbox{PG}_i^{\mbox{\scriptsize B}} = \sum_{k = 2}^7\mbox{PG}_i^{\mbox{\scriptsize B(k)}}, \hspace{5mm}
     \mbox{PG}_i^{\mbox{\scriptsize D}} = \sum_{k = 6}^7\mbox{PG}_i^{\mbox{\scriptsize D(k)}}.
 \end{equation}
@@ -508,7 +504,7 @@ We sum Points Gained across all components to obtain the Points Gained by each p
 
 In measuring individual contributions to team success as outlined in this section, there are three types of uncertainty. The first type of uncertainty ({\it PWP uncertainty}) comes from estimating the point win probability for each state of the Markov chain. Because we observe millions of transitions between only hundreds of states, this type of uncertainty is negligible. The second type of uncertainty ({\it SoS uncertainty}) comes from estimating strength of schedule. This type of uncertainty is particularly difficult to quantify because each player's strength of schedule is the sum of LMER random-effect estimates that are correlated with each other. The third type of uncertainty ({\it player sampling uncertainty}) comes from the fact that are observing a finite sample of performance from each player, which is a noisy estimate of what the player's long-run performance would be in an infinite sample. As we will show in Section \ref{sec:results}, this third type of uncertainty dominates the other two in magnitude.
 
-Because of the difficulty in estimating SoS uncertainty analytically, we turn to bootstrapping for estimating all three types of uncertainty. We draw $B = 200$ bootstrap samples of points from our dataset. Each bootstrap sample is a set of points matching the number of points in the original dataset, drawn with replacement from the original dataset. We bootstrap points rather than \textcolor{blue}{contacts} to maintain the relationship between sequences of \textcolor{blue}{contacts} in the data. On each bootstrap sample we repeat the full methodology outlined in Sections \ref{sec:point-win-prob} through \ref{sec:attribution}. This is computationally expensive, with the bottleneck coming from estimating the eight LMER models described in Section \ref{sec:strength-of-schedule}. The most expensive of these models (clean attack outcome) takes 1-2 hours to estimate on a full season of data, so parameter estimation requires several hours per bootstrap sample. If we did not care about SoS uncertainty, we would not need to bootstrap, and uncertainty quantification would be very inexpensive.
+Because of the difficulty in estimating SoS uncertainty analytically, we turn to bootstrapping for estimating all three types of uncertainty. We draw $B = 200$ bootstrap samples of points from our dataset. Each bootstrap sample is a set of points matching the number of points in the original dataset, drawn with replacement from the original dataset. We bootstrap points rather than contacts to maintain the relationship between sequences of contacts in the data. On each bootstrap sample we repeat the full methodology outlined in Sections \ref{sec:point-win-prob} through \ref{sec:attribution}. This is computationally expensive, with the bottleneck coming from estimating the eight LMER models described in Section \ref{sec:strength-of-schedule}. The most expensive of these models (clean attack outcome) takes 1-2 hours to estimate on a full season of data, so parameter estimation requires several hours per bootstrap sample. If we did not care about SoS uncertainty, we would not need to bootstrap, and uncertainty quantification would be very inexpensive.
 
 Player sampling uncertainty is conceptually different from the first two types of uncertainty. PWP uncertainty and SoS uncertainty have to do with estimating the point value of a contribution made by a player. If the goal is simply to measure the point value of observed performance, we can stop after accounting for these two types of uncertainty. By contrast, player sampling uncertainty has to do with estimating a player's ``true talent''. In other words, the implicit model is that each player's performance is drawn from some distribution, and the goal is estimating the mean of that distribution. While we do not explicitly pose such a model in the present work, this type of uncertainty is the most useful one for coaches seeking to interpret the noise of player performance in finite sample sizes.
 
@@ -519,7 +515,7 @@ Throughout Section \ref{sec:results}, we report bootstrap standard errors where 
 
 \subsection{Strength of Schedule}
 
-We start with a description of the results from estimating the strength of schedule (SoS) models described in Section \ref{sec:strength-of-schedule}. \textcolor{blue}{Detailed model fit summaries are available in the appendix.} Note that SoS is defined on a contact-by-contact level, based on the specific players matched up against each other {\color{blue} within} each adversarial contact {\color{blue} group}. This means that teammates can have different strengths of schedule. Consider, for example, the two teammates compared in Figure \ref{fig:teammate-comparison}. These teammates were the two primary outside hitters for a team in a major conference. We observe that Player A faced a much tougher SoS (+1.4\% PG per attack) than Player B (--0.1\% PG per attack). The single toughest SoS faced on an attack by either player was +13.0\% when Player A recorded an attack against blocker Kaitlyn Hord and digger Lexi Rodriguez of Nebraska.
+We start with a description of the results from estimating the strength of schedule (SoS) models described in Section \ref{sec:strength-of-schedule}. Detailed model fit summaries are available in the appendix. Note that SoS is defined on a contact-by-contact level, based on the specific players matched up against each other within each adversarial contact group. This means that teammates can have different strengths of schedule. Consider, for example, the two teammates compared in Figure \ref{fig:teammate-comparison}. These teammates were the two primary outside hitters for a team in a major conference. We observe that Player A faced a much tougher SoS (+1.4\% PG per attack) than Player B (--0.1\% PG per attack). The single toughest SoS faced on an attack by either player was +13.0\% when Player A recorded an attack against blocker Kaitlyn Hord and digger Lexi Rodriguez of Nebraska.
 
 \begin{figure}
     \centering
@@ -567,9 +563,7 @@ The fact that the spread of raw Points Gained per contact is so much smaller for
     \label{tab:outcome-tree-percents}
 \end{table}
 
-\textcolor{blue}{
   We can compare these results qualitatively with the conclusions from \textcite{miskin_etal_2010}. In that study, the authors found that passing, setting and digging had relatively high importance for the Division I women's team studied, in contrast with the men's national team, for which serving and attacking were the most important skills. From the perspective taken by the present work, the importances of different skills are similar to each other on a per-contact basis, with the exception of the low importance of setting. Because of the great volume of attacks in the sport, our results point to attacking being the most important skill in Division I women's college volleyball, followed by blocking. After those top two skills, serving, receiving, and digging all carry similar importance. The low importance of setting is likely due to a limitation of our dataset: 94\% of set contacts have the \# evaluation code, lacking expressiveness to distinguish between good and bad setter performance.
-}
 
 Outside hitters (OHs) generally have the highest volume of attacks, and they also have more opportunities than other attackers to impact the game through receptions and digs. So it is no surprise that the ranking of top players by adjusted Points Gained per set played is dominated by outside hitters. Table \ref{tab:top-ten-players} shows the top ten players across the NCAA in 2022 by adjusted Points Gained per set, along with a breakdown of the skills that constitute their contributions. For all ten players (except Asjia O'Neil, who contributes most through blocking), the biggest contribution comes from their attacking. All of the players on this list received at least All-America honorable mention, including five first-team All-Americans (\cite{avca_all_america}). A notable case is Elizabeth Juhnke (All-America honorable mention), a standout performer in the Summit League (not one of the top 10 leagues in Table \ref{tab:top-ten-conferences}). Even after adjusting for strength of schedule, Juhnke is still among the top performers in the NCAA. The question of how performance in a mid-major conference will translate to performance in a top conference is an important one for teams which actively recruit players from the NCAA transfer portal.
 
@@ -614,9 +608,9 @@ To highlight the value of raw Points Gained in contrast with the best player per
 
 The obvious application of Points Gained is for player recruitment. There are several thousand women's Division I college volleyball players in the NCAA. College teams and new professional teams in the United States do not have the resources to scout all of these players. By synthesizing information from more than 5 million contacts per season, Points Gained can help teams narrow their focus for scouting. Thanks to the strength of schedule adjustment, these results can also identify players from smaller conferences who may be strong candidates to play on a bigger stage.
 
-Aside from the scouting angle, we also want to illustrate how these results might be applied to in-game decision-making. A common strategy in volleyball is to use a substitute for one of their outside hitters when she is in the back row. This substitute is a {\it defensive specialist} (DS) who specializes in passing (receptions and digs). \textcolor{blue}{In matchups between two teams from Power 5 conferences, we estimate that} 63\%\footnote{\textcolor{blue}{For each rotation position belonging to an outside hitter, we identify the player(s) who made the most contacts while in front row and while in back row. If those are two different players, we label this as a DS substitution pattern.}} of teams replace at least one of their outside hitters with a DS in the back row. However, for every complete rotation of the team, this strategy costs two substitutions (one to sub the DS in, one to sub the DS out), and substitutions are capped. So how much value is the team deriving from this use of substitutions? And how does this value compare to other potential uses of the substitution (e.g. serving specialist)?
+Aside from the scouting angle, we also want to illustrate how these results might be applied to in-game decision-making. A common strategy in volleyball is to use a substitute for one of their outside hitters when she is in the back row. This substitute is a {\it defensive specialist} (DS) who specializes in passing (receptions and digs). In matchups between two teams from Power 5 conferences, we estimate that 63\%\footnote{For each rotation position belonging to an outside hitter, we identify the player(s) who made the most contacts while in front row and while in back row. If those are two different players, we label this as a DS substitution pattern.} of teams replace at least one of their outside hitters with a DS in the back row. However, for every complete rotation of the team, this strategy costs two substitutions (one to sub the DS in, one to sub the DS out), and substitutions are capped. So how much value is the team deriving from this use of substitutions? And how does this value compare to other potential uses of the substitution (e.g. serving specialist)?
 
-We will not answer this question fully, but we will address one component of it. In the back row, the defensive specialist will perform differently from the outside hitter in three skills: reception, dig and (back-row) attack. Let us focus specifically on the reception skill. How much better is the typical DS at receiving serves, relative to the typical outside hitter? Unsurprisingly, there is a big difference between reception performance among all-around outside hitters \textcolor{blue}{(who play in the back row)} and reception performance by front-only outside hitters \textcolor{blue}{(who do not play in the back row)}, as show in Figure \ref{fig:oh-comparison}. Note that \textcolor{blue}{when outside hitters are in the front row, they are generally still responsible for service reception, which makes it possible to estimate} this skill for front-only outside hitters.
+We will not answer this question fully, but we will address one component of it. In the back row, the defensive specialist will perform differently from the outside hitter in three skills: reception, dig and (back-row) attack. Let us focus specifically on the reception skill. How much better is the typical DS at receiving serves, relative to the typical outside hitter? Unsurprisingly, there is a big difference between reception performance among all-around outside hitters (who play in the back row) and reception performance by front-only outside hitters (who do not play in the back row), as show in Figure \ref{fig:oh-comparison}. Note that when outside hitters are in the front row, they are generally still responsible for service reception, which makes it possible to estimate this skill for front-only outside hitters.
 
 \begin{figure}
     \centering
@@ -668,15 +662,12 @@ Despite these limitations, Points Gained presents a significant step forward in 
 
 \section{Appendix}
 
-{\color{blue}
 This appendix provides more diagnostic details on the model fit, as well as details on the dataset. Table \ref{tab:attack-code} is a glossary of common attack codes. Figure \ref{fig:state-sample-size} shows a histogram of the frequency with which each state of the the Markov chain is observed, for estimating the one-step transition probabilities in (\ref{eqn:transition-prob}). Because of the sheer volume of data, the empirical transition probabilities have reasonably low standard errors.
 
 \begin{table}
-  \color{blue}
   \centering
   \input{tables/attack_code.tex}
   \caption{
-    \color{blue}
     A glossary of the most common attack codes, excluding those which occur with frequency less than 1\%. These 13 common attack codes cover 95\% of attacks, with 15 more attack codes covering the remaining 5\%.
   }
   \label{tab:attack-code}
@@ -685,14 +676,15 @@ This appendix provides more diagnostic details on the model fit, as well as deta
 \begin{figure}
     \centering
 %    \includegraphics[width=0.5\linewidth]{figures/state_sample_size.pdf}
-    \caption{\color{blue} Distribution of sample size across game states for the Markov chain model detailed in Section \ref{sec:point-win-prob}. The sample size is the number of transitions observed from each state. We exclude the terminal states and the initial state (S, Sv) from this histogram. The state with the greatest sample size is 188,810 transitions observed from state (R, R+).}
+    \caption{
+      Distribution of sample size across game states for the Markov chain model detailed in Section \ref{sec:point-win-prob}. The sample size is the number of transitions observed from each state. We exclude the terminal states and the initial state (S, Sv) from this histogram. The state with the greatest sample size is 188,810 transitions observed from state (R, R+).
+    }
     \label{fig:state-sample-size}
 \end{figure}
 
 Table \ref{tab:model-summary-serve} provides a summary of the fit for the serve/reception model detailed in Section \ref{sec:sos-serve}, and Table \ref{tab:model-summary-attack} provides a summary of the fit for the set/attack/block/dig models detailed in Section \ref{sec:sos-attack}. All eight LMMs converged without error. The error distribution for each of these models violates the normal distribution assumption because the response variable in each case only takes on a handful of values. The error distribution is therefore discrete-valued and multi-modal. \textcite{schielzeth_etal_2020} provides a recent analysis of the consequences of the normal-error assumption being violated for LMMs. Based on these findings, we can expect a slight upward bias in the random effect standard deviations reported in Tables \ref{tab:model-summary-serve} and \ref{tab:model-summary-attack}. In other words, the predicted player random effects will be less regularized toward the mean than would be optimal.
 
 \begin{table}
-  \color{blue}
   \centering
   \begin{tabular}{ccc|ccc|c}
     \multicolumn{6}{c}{Random Effect Standard Deviation} & Residual\\
@@ -703,13 +695,12 @@ Table \ref{tab:model-summary-serve} provides a summary of the fit for the serve/
     \input{tables/model_summary_serve.tex}
   \end{tabular}
   \caption{
-    \color{blue} Estimated variance components (expressed as standard deviations) from the linear mixed-effects model for serve/reception outcomes detailed in Section \ref{sec:sos-serve}.
+    Estimated variance components (expressed as standard deviations) from the linear mixed-effects model for serve/reception outcomes detailed in Section \ref{sec:sos-serve}.
   }
   \label{tab:model-summary-serve}
 \end{table}
 
 \begin{table}
-  \color{blue}
   \centering
   \begin{tabular}{l|cccc|cccc|c}
     & \multicolumn{8}{c}{Random Effect Standard Deviation} & Residual\\
@@ -720,13 +711,11 @@ Table \ref{tab:model-summary-serve} provides a summary of the fit for the serve/
     \input{tables/model_summary_attack.tex}
   \end{tabular}
   \caption{
-    \color{blue} Estimated variance components (expressed as standard deviations) from the seven linear mixed-effects models for set/attack/block/dig outcomes detailed in Section \ref{sec:sos-attack}.
+    Estimated variance components (expressed as standard deviations) from the seven linear mixed-effects models for set/attack/block/dig outcomes detailed in Section \ref{sec:sos-attack}.
   }
   \label{tab:model-summary-attack}
 \end{table}
 
 To test the sensitivity of the results to the manner in which blocker/digger identity were inferred (when there is no recorded block/dig touch) as detailed in Section \ref{sec:block-dig-responsibility}, we performed an experiment in which we randomly assigned responsibility. For blocking opportunities with no block touch recorded, we randomly selected one front-row player (with equal $1/3$ probability) to bear the responsibility. For digging opportunities with no dig touch recorded, we randomly selected on back-row player (with equal $1/3$ probability) to bear the responsibility. We repeated the full analysis with this random assignment and evaluated the correlation between these randomized results and the original results. Specifically, we focused on adjusted Points Gained per set for each skill, i.e. the columns reported in Table \ref{tab:top-ten-players}. We calculated the correlation (weighted by sets played) across all Division I players in adjusted Points Gained per set by total ($0.989 \pm 0.003$), by serving ($1.000 \pm 0.000$), by passing ($0.983 \pm 0.003$), by setting ($1.000 \pm 0.000$), by attacking ($0.999 \pm 0.001$), and by blocking ($0.933 \pm 0.007$). Passing and blocking Points Gained per set are the most affected by this randomized assignment because they are directly impacted by the assignment, whereas the other skill measurements are only indirectly impacted through strength of schedule (the serving skill is sanitized from this impact). We observe blocker identity for 41\% of block opportunities, and we observe digger identity for 82\% of dig opportunities. The correlations reported here a conservative under-estimate of the correlations between our results and those from using the true blocker/digger responsibilities because the randomized assignment is a very naive alternative.
-
-}
 
 \end{document}
